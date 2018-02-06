@@ -1,1 +1,5 @@
 .ipynb_checkpoints/
+.DS_Store
+crawl-data/
+spark-warehouse/
+extract_kw.py

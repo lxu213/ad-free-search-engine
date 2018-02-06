@@ -16,4 +16,9 @@ We will use the WAT files to assemble an inverted index by extracting keywords a
 
 # Running Spark cluster for batch processing
 
-For running the scripts over larger chunks of data, we will spin up a Spark cluster using AWS Elastic MapReduce. 
+For running the scripts over larger chunks of data, we will spin up a Spark cluster using AWS Elastic MapReduce. The extracted keywords will be stored in parquet files on Amazon S3 buckets.
+
+
+
+
+

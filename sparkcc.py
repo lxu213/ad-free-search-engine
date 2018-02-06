@@ -208,7 +208,6 @@ class CCSparkJob:
             try:
                 for record in ArchiveIterator(stream,
                                               no_record_parse=no_parse):
-                    print 'xxxxxxxxxxxxxx', record, type(record)
                     for res in self.process_record(record):
                         yield res
                     self.records_processed.add(1)
