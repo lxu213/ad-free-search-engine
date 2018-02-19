@@ -1,8 +1,7 @@
 adsense
 adserv
 google-ad
-google
-sponsor
+/sponsor/
 &ad
 /ad-
 /ad/
