@@ -4,3 +4,6 @@ crawl-data/
 spark-warehouse/
 extract_kw.py
 web-search/
+sparkcc.pyc
+extractwarc.pyc
+
