@@ -14,12 +14,14 @@ class ExtractKeywordJob(CCSparkJob):
 
     name = "ExtractKeyword"
     output_schema = StructType([
-        StructField("url", StringType(), True),
-        StructField("title", StringType(), True),
-        StructField("description", StringType(), True),
-        StructField("keywords", StringType(), True)
+        StructField("keywords", StringType(), True),
+        StructField("val", StructType([
+            StructField("url", StringType(), True),
+            StructField("title", StringType(), True),
+            StructField("description", StringType(), True),
+            ]))
         ])
-
+    
     def run_job(self, sc, sqlc):
         # convert .gz input file to RDD of strings
         input_data = sc.textFile(self.args.input,
@@ -39,37 +41,39 @@ class ExtractKeywordJob(CCSparkJob):
             self.records_processed.value))
 
     def process_record(self, record):
-    	return tuple(extractwarc.process_record(record))
+        return tuple(extractwarc.process_record(record))
 
     def is_english(self, title):
-    	return extractwarc.is_english(title)
+        return extractwarc.is_english(title)
 
-    def get_title(self, soup):	
-    	return extractwarc.get_title(soup)
+    def get_title(self, soup):    
+        return extractwarc.get_title(soup)
 
     def get_description(self, soup):
-    	return extractwarc.get_description(soup)
+        return extractwarc.get_description(soup)
 
     def get_links(self, soup):
-    	return extractwarc.get_links(soup)
+        return extractwarc.get_links(soup)
 
     def get_plaintext(self, soup):
-    	return extractwarc.get_plaintext(soup)
+        return extractwarc.get_plaintext(soup)
 
     def open_adwords(self):
-    	return extractwarc.open_adwords()
+        return extractwarc.open_adwords()
 
     def has_ads(self, links, adwords):
-    	return extractwarc.has_ads(links, adwords)
+        return extractwarc.has_ads(links, adwords)
 
     def open_stopwords(self):
-    	return extractwarc.open_stopwords()
+        return extractwarc.open_stopwords()
 
     def get_words_iter(self, txt, stopwords):
-    	return extractwarc.get_words_iter(txt, stopwords)
+        return extractwarc.get_words_iter(txt, stopwords)
 
     def top_words(self, plaintext, stopwords):
-    	return extractwarc.top_words(plaintext, stopwords)
+        return extractwarc.top_words(plaintext, stopwords)
+
+
 
 
 if __name__ == '__main__':

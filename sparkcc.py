@@ -146,7 +146,6 @@ class CCSparkJob:
             .reduceByKey(self.reduce_by_key_func)
 
         # process_warcs includes work from word_count.py
-
         # post-processing from word_count.py (map & reduce) 
         # create SQL DF from output RDD 
         sqlc.createDataFrame(output, schema=self.output_schema) \
