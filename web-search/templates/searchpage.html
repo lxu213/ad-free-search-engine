@@ -1,0 +1,77 @@
+<html>
+    <head>
+        <title>Home</title>
+       <link rel="stylesheet" media="screen" href ="static/bootstrap.min.css">
+       <link rel="stylesheet" media="screen" href ="static/index.css">
+       <link rel="stylesheet" href="static/bootstrap-theme.min.css">
+       <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+ 
+    </head>
+    <body>
+ 
+ 
+<div class="container">
+ 
+ 
+  <h2>Search</h2>
+  <form  action="" method="post" role="form">
+    {{ form.csrf }}
+    <div class="form-group">
+        <input type="text" class="form-control" id="query-input" name="query" placeholder=&#x1F50E; value="{{ query }}">
+
+    </div>
+    <!-- <button type="submit" class="btn btn-success">&#x1F50E;</button> -->
+  </form>
+ 
+
+  <br> 
+
+    {% if data|length: %}
+
+      {% for row in data %}
+
+        <div class="result-block">
+              <a href="{{ row['url']|e }}"">
+                <div class="result-title">{{ row['title']|e }}</div>
+              </a>        
+
+              <div class="result-url">{{ row['url']|e }}</div>
+
+              {% if row['description'] != 'None': %}
+                <p class="result-description">{{ row['description'] }}</p>
+              {% endif %}
+
+        </div>
+
+      {% endfor %}
+
+    {% endif %}
+
+
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+ 
+        {% for message in messages %}
+            {% if "Error" not in message[1]: %}
+                <div class="alert alert-info"> {{ message[1] }}
+                </div>
+            {% endif %}
+ 
+            {% if "Error" in message[1]: %}
+                <div class="alert alert-warning">
+                {{ message[1] }}
+                </div>
+            {% endif %}
+
+        {% endfor %}
+            {% endif %}
+        {% endwith %}
+ 
+</div>
+<br>      
+</div>
+</div>
+</body>
+</html>

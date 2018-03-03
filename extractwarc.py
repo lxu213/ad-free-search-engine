@@ -1,18 +1,21 @@
-## Script to process WARC files on local machine
-## Extract keyword, title, url, etc to build inverted index
+## Process WARC files and save into parquet files
+## Extract keyword, title, url, description, count to build inverted index
 
 from warcio.archiveiterator import ArchiveIterator # do not import nltk.corpus stopwords
 from bs4 import BeautifulSoup
 from collections import Counter
+import random
 import re                         
 
-# TODO: page rank with tf-df
 # TODO: improve ad filter 
 # TODO: run on Spark Cluster via EMR 
 
 PATH='crawl-data/CC-MAIN-2017-13/segments/1490218186353.38/warc/CC-MAIN-20170322212946-00000-ip-10-233-31-227.ec2.internal.warc.gz'
 
 def process_record(record):
+
+    # if random.random() < 0.98:
+    #     return
 
     # skip WARC requests or metadata records
     if record.rec_type != 'response':
@@ -23,9 +26,9 @@ def process_record(record):
     if content_type is None or 'html' not in content_type:
         return 
     soup = BeautifulSoup(record.content_stream().read(), 'html.parser')
-    title = get_title(soup)
+    title = get_title(soup) 
 
-    # skip non-English records
+    # skip non-English records 
     if not is_english(title):
         return 
 
@@ -40,8 +43,8 @@ def process_record(record):
     if has_ads(links, adwords):
         return 
 
-    for word in top_words(plaintext, stopwords):
-        yield unicode(word), (unicode(url), unicode(title), unicode(description))
+    for word, count in top_words(plaintext, stopwords):
+        yield unicode(word), (unicode(url), unicode(title), unicode(description), count)
 
 def is_english(title):
     # assume en if title cannot be ascii-decoded
@@ -71,7 +74,7 @@ def get_plaintext(soup):
 
 def open_adwords():
     adwords = []
-    with open('adwords.txt') as myfile:
+    with open('input/adwords.txt') as myfile:
         for line in myfile:
             adwords.append(line.strip())
     return adwords
@@ -82,7 +85,7 @@ def has_ads(links, adwords):
             return True
 
 def open_stopwords():
-    with open('stopwords.txt') as myfile:     
+    with open('input/stopwords.txt') as myfile:     
         return myfile.readlines()[0].split(',')
 
 def get_words_iter(txt, stopwords):
@@ -98,8 +101,7 @@ def get_words_iter(txt, stopwords):
 def top_words(plaintext, stopwords):
     cleaned_txt = re.compile('[\W_]+').sub(' ', plaintext)
     words = get_words_iter(cleaned_txt.lower(), stopwords)
-    return [w for w, count in Counter(words).most_common(10)]
-
+    return Counter(words).most_common(10)
 
 
 if __name__ == '__main__':
@@ -107,5 +109,7 @@ if __name__ == '__main__':
     with open(PATH, 'rb') as stream:             
         for record in ArchiveIterator(stream):
             i += 1    # iterate over generator
+            # if i > 200:
+            #     break
             [x for x in process_record(record)]    
 

@@ -1,8 +1,11 @@
+cc_notes.ipynb
 .ipynb_checkpoints/
 .DS_Store
 crawl-data/
 spark-warehouse/
 extract_kw.py
-web-search/
+web-search/static/
+web-search/venv/
 sparkcc.pyc
 extractwarc.pyc
+notes.txt

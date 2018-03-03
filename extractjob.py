@@ -19,7 +19,7 @@ class ExtractKeywordJob(CCSparkJob):
             StructField("url", StringType(), True),
             StructField("title", StringType(), True),
             StructField("description", StringType(), True),
-            ]))
+            StructField("count", LongType(), True)]), True)
         ])
     
     def run_job(self, sc, sqlc):
@@ -28,7 +28,7 @@ class ExtractKeywordJob(CCSparkJob):
                                  minPartitions=self.args.num_input_partitions)
         
         # map func process_warcs across partition while keeping index
-        output = input_data.mapPartitionsWithIndex(self.process_warcs)
+        output = input_data.mapPartitionsWithIndex(self.process_warcs) 
 
         # create SQL DF from output RDD 
         sqlc.createDataFrame(output, schema=self.output_schema) \
@@ -73,6 +73,10 @@ class ExtractKeywordJob(CCSparkJob):
     def top_words(self, plaintext, stopwords):
         return extractwarc.top_words(plaintext, stopwords)
 
+    # def reduce_by_key_func_temp(a, b):
+    #     aurl, atitle, adesc = a
+    #     burl, btitle, bdesc = b
+    #     return aurl, atitle, adesc
 
 
 
