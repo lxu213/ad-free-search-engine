@@ -4,8 +4,6 @@ import pandas as pd
 import pyarrow.parquet as pq
 import json
 
-#TODO: implement page rank
-
 # app configuration
 DEBUG = True
 app = Flask(__name__)
@@ -13,8 +11,7 @@ app.config.from_object(__name__)
 app.config['SECRET_KEY'] = '5i11yg00s3'
 
 
-PQPATH='/Users/lxu213/data/ad-free-search-engine/spark-warehouse/output_warc/part-00000-91c58b49-e707-444a-9be2-335b8d9f3aa5-c000.snappy.parquet'
-PQPATH='/Users/lxu213/data/ad-free-search-engine/spark-warehouse/add_count/tf_idf.parquet'
+PQPATH='/Users/lxu213/data/ad-free-search-engine/spark-warehouse/output/tf_idf.parquet'
 data = pq.read_table(PQPATH, nthreads=4).to_pandas()
 
 
@@ -42,10 +39,6 @@ def hello():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
-
-
-
-
 
 
 
