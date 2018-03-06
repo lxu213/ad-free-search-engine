@@ -8,15 +8,9 @@ import random
 import time
 import re                         
 
-# TODO: improve ad filter >> https://www.cs.cmu.edu/~sbhagava/papers/ml.adblock.pdf
-# TODO: run on Spark Cluster via EMR 
-
 PATH='crawl-data/CC-MAIN-2017-13/segments/1490218186353.38/warc/CC-MAIN-20170322212946-00000-ip-10-233-31-227.ec2.internal.warc.gz'
 
-def process_record(record):
-
-    # if random.random() < 0.99:
-    #     return
+def build_index(record):
 
     # skip WARC requests or metadata records
     if record.rec_type != 'response':
@@ -110,7 +104,5 @@ if __name__ == '__main__':
     with open(PATH, 'rb') as stream:             
         for record in ArchiveIterator(stream):
             i += 1    # iterate over generator
-            # if i > 100:
-            #     break
-            [x for x in process_record(record)]    
+            [x for x in build_index(record)]    
 
