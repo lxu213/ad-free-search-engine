@@ -5,27 +5,12 @@ from bs4 import BeautifulSoup
 import extractwarc
 import random
 import csv
-import time
 
-# 1:30 HR 
-# string "in" vs. regex (what is "in" implementation?)
-# make adwords tuple (more memory efficient)
-# verify any() breaks immediately after finding. any() implementation
-
-# why did href tags not return any hits in ad analysis...? 
-# a tag href= www.googleadservices.com/pagead/
-# http://baptist-ministries.org/news.php?n=403
-# bristol palin link too
-
-# try pushing a tags and iframe to parquet files too
-
-print 'start', time.time()
+# runtime = 1:30 HR 
 
 PATH='crawl-data/CC-MAIN-2017-13/segments/1490218186353.38/warc/CC-MAIN-20170322212946-00000-ip-10-233-31-227.ec2.internal.warc.gz'
 
 def most_common_adwords(record, adwords, l_no, ifr_no, s_no):
-
-    test_url = 'http://abcnews.go.com/Politics/bristol-palin-seeks-sole-custody-tripp-levi-johnston/story?id=9440667'
 
     # skip WARC requests or metadata records
     if record.rec_type != 'response':
@@ -35,34 +20,22 @@ def most_common_adwords(record, adwords, l_no, ifr_no, s_no):
     # skip non-HTML or unknown content types
     if content_type is None or 'html' not in content_type:
         return 
-    soup = BeautifulSoup(record.content_stream().read(), 'html.parser')
-    title = get_title(soup) 
+    html = record.content_stream().read()
 
-    # skip non-English records 
+     # skip non-English records 
+    title = re.search('<title>(.*?)</title>', html)
+    if not title:
+        return
+    title = title.group()[7:-8]
     if not is_english(title):
         return 
 
-    url = record.rec_headers['WARC-Target-URI']
-
-    if url != test_url:
-        return
-
-    print url 
-
-    import pdb;pdb.set_trace()
-
-    plaintext = get_plaintext(soup)
-    stopwords = open_stopwords()
+    soup = BeautifulSoup(html, 'html.parser')
+    adwords = open_adwords()
 
     links = get_links(soup)
     iframes = get_iframes(soup)
     scripts = get_scripts(soup)
-
-    print links
-    print iframes
-
-    print l_no
-    print s_no
 
     adwords, l_no, ifr_no, s_no = has_ads(links, iframes, scripts, adwords, l_no, ifr_no, s_no)
 
@@ -115,9 +88,6 @@ def get_links(soup):
 def is_english(title):
     return extractwarc.is_english(title)
 
-def get_title(soup):    
-    return extractwarc.get_title(soup)
-
 def get_plaintext(soup):
     return extractwarc.get_plaintext(soup)
 
@@ -140,14 +110,13 @@ if __name__ == '__main__':
             if processed:
                 adwords, l_no, ifr_no, s_no = processed
 
-        # w = csv.writer(open('ad_analysis_results.csv', 'w'))
-        # for key, val in adwords.items():
-        #     w.writerow([key, val])
+        w = csv.writer(open('ad_analysis_results.csv', 'w'))
+        for key, val in adwords.items():
+            w.writerow([key, val])
 
-        # with open('ad_analysis_counts.txt', 'w') as f:
-        #     f.write('list count: ' + '%d' % l_no + '\n')
-        #     f.write('iframe count: ' + '%d' % ifr_no + '\n')
-        #     f.write('script count: ' + '%d' % s_no)
+        with open('ad_analysis_counts.txt', 'w') as f:
+            f.write('list count: ' + '%d' % l_no + '\n')
+            f.write('iframe count: ' + '%d' % ifr_no + '\n')
+            f.write('script count: ' + '%d' % s_no)
 
-        print 'end', time.time()
 
