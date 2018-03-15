@@ -6,10 +6,10 @@ import pyarrow.parquet as pq
 from fastparquet import write
 import time
 
-# runtime O(n) on 1 parquet = 30 min
-# TODO: how to run this at scale (parallelizing or sampling)
+# runtime for 1 parq = 30 min
+# TODO: run at scale (parallelizing or sampling)
 
-PQPATH='/Users/lxu213/data/ad-free-search-engine/spark-warehouse/has_rank/part-00000-5ede3ccf-f2ae-4379-865c-a660d10c03b4-c000.snappy.parquet'
+PQPATH='/Users/lxu213/data/ad-free-search-engine/spark-warehouse/output_regex/part-00000-10fed00b-5920-42da-9b4d-5f82663b07f3-c000.snappy.parquet'
 OUTPATH='/Users/lxu213/data/ad-free-search-engine/spark-warehouse/'
 
 warc = pq.read_table(PQPATH, nthreads=4).to_pandas()
@@ -35,7 +35,7 @@ def calculate_tf_idf(warc, idf_dict):
  
 def save_parquet(result):
 
-    write(OUTPATH + 'has_rank/testing_optimization.parquet', warc, compression='snappy')
+    write(OUTPATH + 'output_regex/tf_idf.parquet', warc, compression='snappy')
 
 
 

@@ -1,4 +1,3 @@
-cc_notes.ipynb
 .ipynb_checkpoints/
 .DS_Store
 crawl-data/
@@ -9,3 +8,5 @@ web-search/venv/
 sparkcc.pyc
 extractwarc.pyc
 notes.txt
+cc_notes.ipynb
+
