@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from collections import Counter
 import re                         
 
+# runtime for 1 parq = 1 hour
 # TODO: run on Spark
 # TODO: upload demo
 
@@ -14,7 +15,7 @@ PATH='crawl-data/CC-MAIN-2017-13/segments/1490218186353.38/warc/CC-MAIN-20170322
 def process_record(record):
 
     # skip WARC requests or metadata records
-    if record.rec_type != 'response':
+    if record.rec_type != 'response': 
         return 
     content_type = record.http_headers.get_header('content-type', None)
 
