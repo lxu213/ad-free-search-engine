@@ -11,7 +11,7 @@ app.config.from_object(__name__)
 app.config['SECRET_KEY'] = '5i11yg00s3'
 
 
-PQPATH='/Users/lxu213/data/ad-free-search-engine/spark-warehouse/output/tf_idf.parquet'
+PQPATH='/Users/lxu213/data/ad-free-search-engine/spark-warehouse/updated_adwords/tf_idf.parquet'
 data = pq.read_table(PQPATH, nthreads=4).to_pandas()
 
 
